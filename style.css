@@ -712,3 +712,6 @@ button:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+.space-background {
+  background: #35104f !important;
+}
