@@ -53,9 +53,11 @@ button:focus-visible {
   overflow: hidden;
   pointer-events: none;
   background:
-  radial-gradient(ellipse at 75% 25%, rgba(65, 54, 115, 0.16), transparent 38%),
-  radial-gradient(ellipse at 20% 65%, rgba(25, 75, 115, 0.22), transparent 42%),
-  linear-gradient(145deg, #080d1b, #050914 60%, #080a18); 
+  linear-gradient(
+    rgba(3, 7, 20, 0.18),
+    rgba(3, 7, 20, 0.35)
+  ),
+  url("./file_0000000096a0821195d196d7c5bbc6cf.png") center center / cover no-repeat;
 }
 
 .space-background::before {
