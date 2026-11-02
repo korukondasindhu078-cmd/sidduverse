@@ -7,10 +7,13 @@
 
 body {
   min-height: 100vh;
-  overflow: hidden;
   background: #030711;
   color: #eaf3ff;
   font-family: Arial, sans-serif;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .intro {
@@ -24,7 +27,7 @@ body {
   padding: 24px;
   isolation: isolate;
   background:
-    radial-gradient(ellipse at 50% 45%, #142b49 0%, #091326 35%, #030711 75%);
+    radial-gradient(ellipse at 50% 45%, #142b49, #091326 45%, #030711 80%);
 }
 
 .stars {
@@ -32,11 +35,11 @@ body {
   inset: 0;
   z-index: -1;
   background-image:
-    radial-gradient(2px 2px at 20% 30%, #ffffff 50%, transparent),
+    radial-gradient(2px 2px at 20% 30%, white 50%, transparent),
     radial-gradient(1px 1px at 70% 20%, #9fcaff 50%, transparent),
-    radial-gradient(2px 2px at 80% 70%, #ffffff 50%, transparent),
+    radial-gradient(2px 2px at 80% 70%, white 50%, transparent),
     radial-gradient(1px 1px at 35% 80%, #9fcaff 50%, transparent),
-    radial-gradient(1px 1px at 55% 55%, #ffffff 50%, transparent);
+    radial-gradient(1px 1px at 55% 55%, white 50%, transparent);
   background-size: 250px 250px;
   opacity: 0.7;
 }
@@ -49,9 +52,9 @@ body {
 }
 
 h1 {
-  font-size: clamp(42px, 12vw, 76px);
+  font-size: clamp(36px, 10vw, 65px);
   font-weight: 300;
-  letter-spacing: 10px;
+  letter-spacing: 7px;
   color: #f2f7ff;
   text-shadow: 0 0 30px #75a9e866;
 }
@@ -64,6 +67,11 @@ h1 {
 }
 
 button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.intro button {
   margin-top: 55px;
   padding: 16px 28px;
   background: transparent;
@@ -71,16 +79,15 @@ button {
   color: #eaf3ff;
   font-size: 11px;
   letter-spacing: 3px;
-  cursor: pointer;
   transition: 0.3s ease;
 }
 
-button span {
+.intro button span {
   margin-left: 15px;
   font-size: 17px;
 }
 
-button:hover {
+.intro button:hover {
   background: #769bc522;
   box-shadow: 0 0 25px #769bc544;
 }
@@ -91,4 +98,121 @@ button:hover {
   font-size: 9px;
   letter-spacing: 4px;
   color: #607995;
+}
+
+/* GALAXY MAP */
+
+.universe {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 55px 20px 35px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 35%, #142b49 0%, #091326 42%, #030711 85%);
+}
+
+.map-header h1 {
+  font-size: clamp(30px, 8vw, 48px);
+  letter-spacing: 5px;
+}
+
+.map-header .eyebrow {
+  margin-bottom: 16px;
+}
+
+.map-header .subtitle {
+  margin-top: 12px;
+}
+
+.planet-grid {
+  width: 100%;
+  max-width: 480px;
+  margin: 45px auto 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px 15px;
+}
+
+.planet-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: #eaf3ff;
+  padding: 8px 3px;
+  transition: transform 0.3s ease;
+}
+
+.planet-card:active {
+  transform: scale(0.94);
+}
+
+.planet {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: block;
+  margin-bottom: 17px;
+  box-shadow: inset -17px -12px 25px #00000099,
+              0 0 30px #4e8bc544;
+}
+
+.planet-origin {
+  background: radial-gradient(circle at 30% 30%, #a6c8e9, #315b83 55%, #101c36);
+}
+
+.planet-echo {
+  background: radial-gradient(circle at 30% 30%, #f3d9a0, #a66c54 55%, #34243b);
+  box-shadow: inset -17px -12px 25px #00000099,
+              0 0 30px #d5a16b44;
+}
+
+.planet-unknown {
+  background: radial-gradient(circle at 30% 30%, #c7b7ec, #68548e 55%, #211b42);
+}
+
+.planet-signal {
+  background: radial-gradient(circle at 30% 30%, #a0e4e5, #367e91 55%, #102b47);
+}
+
+.planet-nova {
+  background: radial-gradient(circle at 30% 30%, #ffe5a5, #9d633b 55%, #392333);
+  opacity: 0.45;
+}
+
+.planet-name {
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+.planet-info {
+  margin-top: 8px;
+  font-size: 10px;
+  color: #8299b4;
+  letter-spacing: 0.5px;
+}
+
+.locked {
+  opacity: 0.55;
+}
+
+.progress {
+  margin-top: 30px;
+  color: #8faacb;
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+
+@media (max-width: 360px) {
+  .planet {
+    width: 80px;
+    height: 80px;
+  }
+
+  .planet-grid {
+    gap: 25px 10px;
+  }
 }
