@@ -1,71 +1,150 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sidduverse | Explore the Unknown</title>
+  <meta name="theme-color" content="#050914">
+  <title>SIDDUVERSE — Beyond the Known</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <div class="space-background">
+    <div class="star-layer"></div>
+    <div class="nebula nebula-one"></div>
+    <div class="nebula nebula-two"></div>
+  </div>
 
-  <main class="intro">
-    <div class="stars"></div>
+  <main id="app">
 
-    <p class="eyebrow">AN UNCHARTED UNIVERSE</p>
-    <h1>SIDDUVERSE</h1>
-    <p class="subtitle">A little world hidden in the stars.</p>
+    <!-- OPENING SCREEN -->
+    <section id="intro" class="screen intro-screen">
+      <div class="intro-top">
+        <span>SV // 09.11.2026</span>
+        <span>DEEP SPACE EXPLORATION</span>
+      </div>
 
-    <button id="enterButton">
-      ENTER THE UNKNOWN <span>→</span>
-    </button>
+      <div class="intro-content">
+        <p class="eyebrow">AN UNCHARTED UNIVERSE</p>
+        <h1>SIDDU<span>VERSE</span></h1>
+        <p class="intro-subtitle">Some worlds are waiting to be discovered.</p>
 
-    <p class="footer-text">A NEW JOURNEY AWAITS</p>
-  </main>
+        <button id="enterButton" class="primary-button">
+          BEGIN TRANSMISSION <span>↗</span>
+        </button>
+      </div>
 
-  <main class="universe" id="universe" hidden>
-    <header class="map-header">
-      <p class="eyebrow">EXPLORATION SYSTEM • 001</p>
-      <h1>THE UNIVERSE</h1>
-      <p class="subtitle">Every world holds a story.</p>
-    </header>
-
-    <section class="planet-grid">
-
-      <button class="planet-card" data-planet="ORIGIN">
-        <span class="planet planet-origin"></span>
-        <span class="planet-name">ORIGIN</span>
-        <span class="planet-info">The beginning</span>
-      </button>
-
-      <button class="planet-card" data-planet="ECHO">
-        <span class="planet planet-echo"></span>
-        <span class="planet-name">ECHO</span>
-        <span class="planet-info">Moments that remain</span>
-      </button>
-
-      <button class="planet-card" data-planet="UNKNOWN">
-        <span class="planet planet-unknown"></span>
-        <span class="planet-name">UNKNOWN</span>
-        <span class="planet-info">Discover the secrets</span>
-      </button>
-
-      <button class="planet-card" data-planet="SIGNAL">
-        <span class="planet planet-signal"></span>
-        <span class="planet-name">SIGNAL</span>
-        <span class="planet-info">A message awaits</span>
-      </button>
-
-      <button class="planet-card locked" data-planet="NOVA">
-        <span class="planet planet-nova"></span>
-        <span class="planet-name">NOVA 🔒</span>
-        <span class="planet-info">Classified destination</span>
-      </button>
-
+      <div class="intro-bottom">
+        <span>UNKNOWN SECTOR // 001</span>
+        <span>SYSTEM ONLINE</span>
+      </div>
     </section>
 
-    <p class="progress">DISCOVERED: <span id="progress">0 / 4</span></p>
+    <!-- WELCOME SCREEN -->
+    <section id="welcome" class="screen welcome-screen hidden">
+      <div class="welcome-content">
+        <p class="eyebrow">TRANSMISSION RECEIVED</p>
+        <h2>WELCOME,<br><span>EXPLORER.</span></h2>
+        <p>
+          Beyond the familiar stars lies a universe
+          waiting for you. Every world holds a secret.
+          Every discovery brings you closer to the unknown.
+        </p>
+        <button id="mapButton" class="primary-button">
+          EXPLORE THE GALAXY <span>→</span>
+        </button>
+      </div>
+      <span class="coordinates">COORDINATES: 09°11'26"</span>
+    </section>
+
+    <!-- GALAXY MAP -->
+    <section id="universe" class="screen universe-screen hidden">
+      <header class="map-header">
+        <div>
+          <p class="eyebrow">EXPLORATION LOG // 001</p>
+          <h2>THE <span>KNOWN UNIVERSE</span></h2>
+        </div>
+        <div class="progress">
+          <span>FRAGMENTS</span>
+          <strong id="fragmentCount">00 / 04</strong>
+        </div>
+      </header>
+
+      <p class="map-description">
+        Four worlds remain unexplored. One waits beyond them all.
+      </p>
+
+      <div class="galaxy-map">
+
+        <button class="planet-card origin" data-planet="origin">
+          <span class="planet-visual planet-origin"></span>
+          <span class="planet-info">
+            <span class="planet-number">WORLD 01</span>
+            <strong>ORIGIN</strong>
+            <small>Where it all begins</small>
+          </span>
+          <span class="planet-arrow">↗</span>
+        </button>
+
+        <button class="planet-card echo" data-planet="echo">
+          <span class="planet-visual planet-echo"></span>
+          <span class="planet-info">
+            <span class="planet-number">WORLD 02</span>
+            <strong>ECHO</strong>
+            <small>Traces of another time</small>
+          </span>
+          <span class="planet-arrow">↗</span>
+        </button>
+
+        <button class="planet-card unknown" data-planet="unknown">
+          <span class="planet-visual planet-unknown"></span>
+          <span class="planet-info">
+            <span class="planet-number">WORLD 03</span>
+            <strong>UNKNOWN</strong>
+            <small>Not everything is visible</small>
+          </span>
+          <span class="planet-arrow">↗</span>
+        </button>
+
+        <button class="planet-card signal" data-planet="signal">
+          <span class="planet-visual planet-signal"></span>
+          <span class="planet-info">
+            <span class="planet-number">WORLD 04</span>
+            <strong>SIGNAL</strong>
+            <small>A message from the stars</small>
+          </span>
+          <span class="planet-arrow">↗</span>
+        </button>
+
+        <button class="planet-card nova locked" data-planet="nova">
+          <span class="planet-visual planet-nova"></span>
+          <span class="planet-info">
+            <span class="planet-number">WORLD 05 // RESTRICTED</span>
+            <strong>NOVA</strong>
+            <small>Complete all fragments to unlock</small>
+          </span>
+          <span class="lock-symbol">⌑</span>
+        </button>
+
+      </div>
+
+      <footer class="map-footer">
+        <span>SIDDUVERSE EXPEDITION</span>
+        <span>ALL SYSTEMS NOMINAL</span>
+      </footer>
+    </section>
+
+    <!-- PLANET EXPLORATION -->
+    <section id="planetView" class="screen planet-screen hidden">
+      <button id="backButton" class="back-button">← GALAXY MAP</button>
+      <p class="eyebrow" id="planetLabel">WORLD 01</p>
+      <h2 id="planetTitle">ORIGIN</h2>
+      <p id="planetDescription"></p>
+      <button id="discoverButton" class="primary-button">
+        DISCOVER FRAGMENT <span>→</span>
+      </button>
+    </section>
+
   </main>
 
   <script src="script.js"></script>
