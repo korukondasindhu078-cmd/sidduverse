@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sidduverse | A Little World Hidden in the Stars</title>
+  <title>Sidduverse | Explore the Unknown</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -14,21 +14,58 @@
     <div class="stars"></div>
 
     <p class="eyebrow">AN UNCHARTED UNIVERSE</p>
-
     <h1>SIDDUVERSE</h1>
-
-    <p class="subtitle">
-      A little world hidden in the stars.
-    </p>
+    <p class="subtitle">A little world hidden in the stars.</p>
 
     <button id="enterButton">
-      ENTER THE UNKNOWN
-      <span>→</span>
+      ENTER THE UNKNOWN <span>→</span>
     </button>
 
-    <p class="footer-text">
-      A NEW JOURNEY AWAITS
-    </p>
+    <p class="footer-text">A NEW JOURNEY AWAITS</p>
+  </main>
+
+  <main class="universe" id="universe" hidden>
+    <header class="map-header">
+      <p class="eyebrow">EXPLORATION SYSTEM • 001</p>
+      <h1>THE UNIVERSE</h1>
+      <p class="subtitle">Every world holds a story.</p>
+    </header>
+
+    <section class="planet-grid">
+
+      <button class="planet-card" data-planet="ORIGIN">
+        <span class="planet planet-origin"></span>
+        <span class="planet-name">ORIGIN</span>
+        <span class="planet-info">The beginning</span>
+      </button>
+
+      <button class="planet-card" data-planet="ECHO">
+        <span class="planet planet-echo"></span>
+        <span class="planet-name">ECHO</span>
+        <span class="planet-info">Moments that remain</span>
+      </button>
+
+      <button class="planet-card" data-planet="UNKNOWN">
+        <span class="planet planet-unknown"></span>
+        <span class="planet-name">UNKNOWN</span>
+        <span class="planet-info">Discover the secrets</span>
+      </button>
+
+      <button class="planet-card" data-planet="SIGNAL">
+        <span class="planet planet-signal"></span>
+        <span class="planet-name">SIGNAL</span>
+        <span class="planet-info">A message awaits</span>
+      </button>
+
+      <button class="planet-card locked" data-planet="NOVA">
+        <span class="planet planet-nova"></span>
+        <span class="planet-name">NOVA 🔒</span>
+        <span class="planet-info">Classified destination</span>
+      </button>
+
+    </section>
+
+    <p class="progress">DISCOVERED: <span id="progress">0 / 4</span></p>
   </main>
 
   <script src="script.js"></script>
