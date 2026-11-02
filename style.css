@@ -34,46 +34,62 @@ button {
   z-index: -1;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 50% 50%, #101a2d 0%, #080e1b 48%, #03060e 100%);
+    radial-gradient(ellipse at 76% 24%, rgba(76, 63, 119, 0.22), transparent 34%),
+    radial-gradient(ellipse at 18% 76%, rgba(30, 72, 104, 0.2), transparent 38%),
+    radial-gradient(ellipse at 55% 52%, #101426 0%, #080d1b 52%, #030711 100%);
+}
+
+.space-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(2, 5, 13, 0.3), transparent 50%, rgba(2, 5, 13, 0.2)),
+    radial-gradient(ellipse, transparent 35%, rgba(1, 4, 12, 0.55) 100%);
+  pointer-events: none;
 }
 
 .star-layer {
   position: absolute;
-  inset: -50%;
-  opacity: 0.65;
+  inset: -20%;
+  opacity: 0.55;
   background-image:
     radial-gradient(1px 1px at 12% 18%, #fff 98%, transparent),
-    radial-gradient(1px 1px at 35% 72%, #d5e5ff 98%, transparent),
+    radial-gradient(1px 1px at 35% 72%, #d5dfff 98%, transparent),
     radial-gradient(2px 2px at 66% 28%, #fff 98%, transparent),
-    radial-gradient(1px 1px at 82% 64%, #d5e5ff 98%, transparent),
-    radial-gradient(1px 1px at 53% 47%, #fff 98%, transparent),
-    radial-gradient(2px 2px at 21% 88%, #fff 98%, transparent);
-  background-size: 260px 260px;
-  animation: drift 100s linear infinite;
+    radial-gradient(1px 1px at 82% 64%, #d5dfff 98%, transparent),
+    radial-gradient(1px 1px at 53% 47%, #f4d9ad 98%, transparent),
+    radial-gradient(1px 1px at 21% 88%, #fff 98%, transparent),
+    radial-gradient(1px 1px at 91% 12%, #fff 98%, transparent),
+    radial-gradient(2px 2px at 45% 15%, #e6d5ff 98%, transparent);
+  background-size: 340px 340px;
+  animation: starDrift 100s linear infinite;
 }
 
 .nebula {
   position: absolute;
-  width: 70vw;
-  height: 70vw;
-  max-width: 750px;
-  max-height: 750px;
+  width: 75vw;
+  height: 75vw;
+  max-width: 850px;
+  max-height: 850px;
   border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.13;
+  filter: blur(100px);
+  opacity: 0.16;
   pointer-events: none;
+  animation: nebulaFloat 32s ease-in-out infinite alternate;
 }
 
 .nebula-one {
-  top: -25%;
-  left: -25%;
-  background: #244b91;
+  top: -30%;
+  left: -28%;
+  background: radial-gradient(circle, #554477, #293c68 45%, transparent 72%);
 }
 
 .nebula-two {
-  right: -30%;
-  bottom: -35%;
-  background: #795238;
+  right: -32%;
+  bottom: -38%;
+  background: radial-gradient(circle, #806044, #403b69 45%, transparent 72%);
+  animation-delay: -12s;
 }
 
 #app {
@@ -507,5 +523,21 @@ button {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  
+@keyframes starDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-100px, 55px, 0);
+  }
+}
+
+@keyframes nebulaFloat {
+  from {
+    transform: translate3d(-15px, 10px, 0) scale(1);
+  }
+  to {
+    transform: translate3d(25px, -20px, 0) scale(1.12);
   }
 }
