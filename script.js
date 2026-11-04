@@ -1,121 +1,110 @@
-const screens = {
-  intro: document.getElementById("intro"),
-  welcome: document.getElementById("welcome"),
-  universe: document.getElementById("universe"),
-  planet: document.getElementById("planetView")
-};
+(() => {
+  const KEY = 'sidduverse-progress-v1';
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
 
-function showScreen(name) {
-  Object.values(screens).forEach(screen => {
-    screen.classList.add("hidden");
+  const W = [
+    { id: 'origin', n: 1, name: 'ORIGIN', tag: 'Where it all begins', kick: 'World 01 // Personality archive', fr: 'Identity',
+      txt: 'Every universe begins somewhere. This one begins with its most interesting explorer. Discover the little details, familiar habits and unexpected facts that make this world unique.', pos: '50% 55%' },
+    { id: 'echo', n: 2, name: 'ECHO', tag: 'Traces of another time', kick: 'World 02 // Memory archive', fr: 'Memory',
+      txt: 'Some moments leave traces long after they pass. This world holds fragments of memories, little stories and moments worth revisiting.', pos: '50% 40%' },
+    { id: 'unknown', n: 3, name: 'UNKNOWN', tag: 'Not everything is visible', kick: 'World 03 // Uncharted territory', fr: 'Discovery',
+      txt: 'Not every secret reveals itself immediately. Look closer, solve the clues and see what you can uncover in this unexplored world.', pos: '50% 50%' },
+    { id: 'signal', n: 4, name: 'SIGNAL', tag: 'A message from the stars', kick: 'World 04 // Incoming transmission', fr: 'Transmission',
+      txt: 'A message is travelling across the universe. Hidden somewhere in this world are signals meant for one particular explorer.', pos: '50% 50%' }
+  ];
+
+  let done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} };
+  const count = () => W.filter(w => done[w.id]).length;
+
+  let cur = 'opening', active = null, novaSeen = !!done.novaSeen;
+
+  function show(id) {
+    $$('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+    cur = id;
+    $('#' + id).scrollTop = 0;
+  }
+
+  function go(id) {
+    if ((id === 'nova' || id === 'final') && count() < 4) id = 'galaxy';
+    if (id === 'galaxy') drawMap();
+    show(id);
+  }
+
+  function drawMap() {
+    const n = count(), unlocked = n === 4;
+    $('#count').textContent = '0' + n + ' / 04';
+    const cards = W.map(w => `<button class="card${done[w.id] ? ' done' : ''}" data-world="${w.id}"><i class="orb o-${w.id}"></i><div><small>WORLD 0${w.n}${done[w.id] ? ' // FRAGMENT COLLECTED' : ''}</small><strong>${w.name}</strong><span>${w.tag}</span></div></button>`);
+    const fresh = unlocked && !novaSeen;
+    cards.push(`<button class="card ${unlocked ? 'open' : 'lock'}" data-world="nova" ${unlocked ? '' : 'aria-disabled="true"'}><i class="orb o-nova"></i><div><small>WORLD 05 // ${unlocked ? 'UNLOCKED' : 'RESTRICTED'}</small><strong>NOVA</strong><span>${unlocked ? 'All fragments collected. Enter.' : 'Complete all fragments to unlock'}</span></div></button>`);
+    $('#worlds').innerHTML = cards.join('');
+    if (fresh) { novaSeen = done.novaSeen = true; save(); }
+    else if (unlocked) $('#worlds .open').style.animation = 'none';
+  }
+
+  function paintWorld() {
+    const w = active, got = !!done[w.id];
+    $('#wbtn').hidden = got;
+    $('#wdone').hidden = !got;
+    $('#wgot').textContent = 'Fragment 0' + w.n + ' collected: ' + w.fr + '.';
+  }
+
+  function openWorld(id) {
+    active = W.find(w => w.id === id);
+    $('#world .bg').className = 'bg b-' + id;
+    $('#world .bg').style.setProperty('--pos', active.pos);
+    $('#wkick').textContent = active.kick;
+    $('#wtitle').textContent = active.name;
+    $('#wtxt').textContent = active.txt;
+    paintWorld();
+    show('world');
+  }
+
+  document.addEventListener('click', e => {
+    const g = e.target.closest('[data-go]');
+    if (g) return go(g.dataset.go);
+    const c = e.target.closest('.card');
+    if (!c) return;
+    const id = c.dataset.world;
+    if (id === 'nova') {
+      if (count() === 4) go('nova');
+      else { c.classList.remove('nope'); void c.offsetWidth; c.classList.add('nope'); }
+    } else openWorld(id);
   });
 
-  screens[name].classList.remove("hidden");
-}
+  // TEMP: tapping the button awards the fragment. Replace with the real quiz, memories, puzzles and signals.
+  $('#wbtn').addEventListener('click', () => { done[active.id] = true; save(); paintWorld(); });
+  $('#open').addEventListener('click', () => { $('#msg').classList.add('show'); $('#open').hidden = true; });
 
-document.getElementById("enterButton").addEventListener("click", () => {
-  showScreen("welcome");
-});
-
-document.getElementById("mapButton").addEventListener("click", () => {
-  showScreen("universe");
-});
-
-const planets = {
-  origin: {
-    label: "WORLD 01 // PERSONALITY ARCHIVE",
-    title: "ORIGIN",
-    description: "Every universe begins somewhere. This one begins with its most interesting explorer. Discover the little details, familiar habits and unexpected facts that make this world unique."
-  },
-  echo: {
-    label: "WORLD 02 // MEMORY ARCHIVE",
-    title: "ECHO",
-    description: "Some moments leave traces long after they pass. This world holds fragments of memories, little stories and moments worth revisiting."
-  },
-  unknown: {
-    label: "WORLD 03 // UNCHARTED TERRITORY",
-    title: "UNKNOWN",
-    description: "Not every secret reveals itself immediately. Look closer, solve the clues and see what you can uncover in this unexplored world."
-  },
-  signal: {
-    label: "WORLD 04 // INCOMING TRANSMISSION",
-    title: "SIGNAL",
-    description: "A message is travelling across the universe. Hidden somewhere in this world are signals meant for one particular explorer."
-  },
-  nova: {
-    label: "WORLD 05 // FINAL DESTINATION",
-    title: "NOVA",
-    description: "You've reached the final destination. The universe has one last surprise waiting for you."
+  // Twinkling stars layered over the photographs
+  const cv = $('#stars'), g2 = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let S = [];
+  function fit() {
+    const d = Math.min(devicePixelRatio || 1, 2), w = innerWidth, h = innerHeight;
+    cv.width = w * d; cv.height = h * d; g2.setTransform(d, 0, 0, d, 0, 0);
+    S = Array.from({ length: Math.round(w * h / 7000) }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.1 + .3, p: Math.random() * 6.28, s: Math.random() * .0015 + .0004 }));
+    if (still) tick(0);
   }
-};
-
-const discovered = new Set();
-const fragmentCount = document.getElementById("fragmentCount");
-const planetCards = document.querySelectorAll(".planet-card");
-
-planetCards.forEach(card => {
-  card.addEventListener("click", () => {
-    const name = card.dataset.planet;
-
-    if (name === "nova" && discovered.size < 4) {
-      return;
+  function tick(t) {
+    g2.clearRect(0, 0, innerWidth, innerHeight);
+    g2.fillStyle = '#EDF3FA';
+    for (const s of S) {
+      g2.globalAlpha = .25 + .55 * Math.abs(Math.sin(t * s.s + s.p));
+      g2.beginPath(); g2.arc(s.x, s.y, s.r, 0, 6.283); g2.fill();
     }
-
-    const planet = planets[name];
-
-    document.getElementById("planetLabel").textContent = planet.label;
-    document.getElementById("planetTitle").textContent = planet.title;
-    document.getElementById("planetDescription").textContent = planet.description;
-
-    const discoverButton = document.getElementById("discoverButton");
-
-    if (name === "nova") {
-      discoverButton.textContent = "ENTER THE FINAL WORLD →";
-      discoverButton.disabled = false;
-    } else if (discovered.has(name)) {
-      discoverButton.textContent = "FRAGMENT COLLECTED ✓";
-      discoverButton.disabled = true;
-    } else {
-      discoverButton.textContent = "DISCOVER FRAGMENT →";
-      discoverButton.disabled = false;
-    }
-
-    showScreen("planet");
-  });
-});
-
-document.getElementById("discoverButton").addEventListener("click", () => {
-  const title = document.getElementById("planetTitle").textContent;
-  const name = title.toLowerCase();
-
-  if (name === "nova") {
-    document.getElementById("planetLabel").textContent =
-      "MISSION COMPLETE // BIRTHDAY TRANSMISSION";
-    document.getElementById("planetTitle").textContent = "HAPPY BIRTHDAY";
-    document.getElementById("planetDescription").textContent =
-      "Explorer, you've made it to the end of this little universe. But the best part of every journey is the story it leaves behind.";
-    document.getElementById("discoverButton").classList.add("hidden");
-    return;
+    if (!still) requestAnimationFrame(tick);
   }
+  addEventListener('resize', fit);
+  fit();
+  if (!still) requestAnimationFrame(tick);
 
-  if (!discovered.has(name)) {
-    discovered.add(name);
-    fragmentCount.textContent =
-      String(discovered.size).padStart(2, "0") + " / 04";
-  }
-
-  if (discovered.size === 4) {
-    const nova = document.querySelector('[data-planet="nova"]');
-    nova.classList.remove("locked");
-    nova.querySelector(".planet-number").textContent = "WORLD 05 // UNLOCKED";
-    nova.querySelector("small").textContent = "The final destination awaits";
-    nova.querySelector(".lock-symbol").textContent = "↗";
-  }
-
-  document.getElementById("discoverButton").classList.add("hidden");
-});
-
-document.getElementById("backButton").addEventListener("click", () => {
-  document.getElementById("discoverButton").classList.remove("hidden");
-  showScreen("universe");
-});
+  // Occasional shooting star on the opening screen only
+  const sh = $('.shoot');
+  if (!still) setInterval(() => {
+    if (cur !== 'opening' || document.hidden) return;
+    sh.classList.remove('go'); void sh.offsetWidth; sh.classList.add('go');
+  }, 9000);
+})();
