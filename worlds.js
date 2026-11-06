@@ -60,7 +60,7 @@
 
   // ECHO: tap ripples, each memory returns with its last words echoing
   async function echo() {
-    const { z, alive } = make('echo', 'World 02 // Memory archive', 'ECHO');
+    const { z, alive } = make('echo', 'World 2', 'ECHO');
     const card = el('div', 'w-card'); z.append(card);
     const spots = [[24, 16], [76, 30], [28, 54], [72, 70]], seen = new Set();
     ECHO.forEach((m, i) => {
@@ -80,7 +80,7 @@
 
   // UNKNOWN: move a light through the dark and linger on what glints
   async function unknown() {
-    const { z, alive } = make('unknown', 'World 03 // Uncharted territory', 'UNKNOWN');
+    const { z, alive } = make('unknown', 'World 3', 'UNKNOWN');
     const pos = [[50, 16], [40, 48], [60, 80]], clues = [];
     UNKNOWN.forEach((t, i) => {
       const c = el('div', 'w-clue'); c.style.left = pos[i % 3][0] + '%'; c.style.top = pos[i % 3][1] + '%';
@@ -105,7 +105,7 @@
 
   // SIGNAL: tune the dial until static turns into a message
   async function signal() {
-    const { z, alive } = make('signal', 'World 04 // Incoming transmission', 'SIGNAL');
+    const { z, alive } = make('signal', 'World 4', 'SIGNAL');
     z.innerHTML = '<div class="w-scr"><div class="w-f"></div><p class="w-txt"></p></div><div class="w-meter"><i></i></div><input class="w-dial" type="range" min="880" max="1080" value="880" aria-label="Tune"><div class="w-log"></div>';
     const fr = z.querySelector('.w-f'), tx = z.querySelector('.w-txt'), mt = z.querySelector('.w-meter i'), dial = z.querySelector('.w-dial'), log = z.querySelector('.w-log');
     const F = [918, 968, 1042], got = new Set(), G = '▒░▓#%&*+=';

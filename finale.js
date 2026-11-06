@@ -3,7 +3,9 @@
   const NAME = 'Captain Sid';
   const MESSAGE = ['[First line of your message]', '[Second line]', '[Third line]'];
   const SIGN = '[Your name]';
-  const PROMISE = 'Promise you’ll come back next year, Captain Sid. The universe is better with you in it.';
+  const PROMISE = 'If you’re around next year, this universe will be here.';
+  const PROMISE_BTN = 'See you next year ✦', SEALED_LINE = 'Sealed ✦ See you next year.';
+  const REVEAL_LINE = 'Siddhardhaa is a lot of letters. So, Siddu.';
   const TAG = 'P.S. Bring snacks 🍿';
   const SEALED = [
     { date: '2027-11-09', text: '[Your message for 09.11.2027]' },
@@ -22,7 +24,7 @@
   // New copy, applied over the original screens
   set('#opening .kick', 'Made just for you');
   set('#opening .tag', S.seen ? 'Welcome back, ' + NAME + '.' : 'A little world hidden in the stars.');
-  if (S.seen) $('#opening .btn').textContent = 'Continue transmission';
+  if (S.seen) $('#opening .btn').textContent = 'Continue';
   set('#welcome h2', 'Welcome,<br>' + NAME + '.');
   set('#welcome p:not(.kick)', 'Someone built a whole universe just for you. Four little worlds are waiting, and each one holds something that’s yours.');
   set('#galaxy .gh .sm', 'Your universe');
@@ -30,7 +32,7 @@
   set('#nova p:not(.kick)', 'You made it, ' + NAME + '. The last star is ready.');
   new MutationObserver(() => {
     const s = $('#worlds .lock span');
-    if (s) s.textContent = 'Signal lost. Collect all four fragments to restore it.';
+    if (s) s.textContent = 'Locked for now. Finish all four worlds to open it.';
   }).observe($('#worlds'), { childList: true });
 
   // Helpers
@@ -64,7 +66,7 @@
 
   // The log: shown on every return
   function room(box, back) {
-    const fresh = back && star(yr());
+    const y = yr(), fresh = back && y >= 2026 && star(y), cd = window.SVcode && window.SVcode.encode();
     const next = SEALED.find(s => !isOpen(s.date));
     const days = next && Math.ceil((new Date(next.date + 'T00:00:00') - Date.now()) / 864e5);
     box.innerHTML = '<p class="kick">Captain’s log</p><h2 class="sm">' + (back ? 'Welcome back, ' + NAME + '.' : 'Mission saved.') + '</h2>' +
@@ -72,6 +74,7 @@
       (fresh ? '<p class="cap">A new star just appeared in your sky.</p>' : '') +
       '<div class="sealed">' + SEALED.map(row).join('') + '</div>' +
       (next ? '<p class="starrow">Next transmission in ' + days + ' day' + (days === 1 ? '' : 's') + '</p>' : '') +
+      (cd ? '<div class="ccode"><small>Your Captain’s code</small><b>' + cd + '</b><p>Keep it safe. Type it on any phone to bring everything back.</p></div>' : '') +
       '<button class="btn" id="rp">Replay the ending</button><button class="btn" data-go="galaxy">Galaxy map</button>';
     $('#rp').onclick = () => play(box);
   }
@@ -84,16 +87,16 @@
     box.innerHTML = '<canvas class="fx"></canvas><div class="core" style="left:' + cx + 'px;top:' + cy + 'px"></div>';
     const cv = box.firstChild, g = cv.getContext('2d'), core = box.lastChild;
     cv.width = W; cv.height = H;
-    const COL = ['#7fa6d6', '#d58bd0', '#4fd1c5', '#d9a84e'], POS = [[.2, .2], [.8, .27], [.22, .55], [.78, .6]];
-    let P = [], alive = true, got = 0;
+    const COL = ['#a9c4ff', '#ffd9a8', '#cfe6ff', '#ffe6bf'], POS = [[.2, .2], [.8, .27], [.22, .55], [.78, .6]];
+    let P = [], alive = true, got = 0, ta = 0, tb = 0, ga = 0, gb = 0;
     const stones = COL.map((c, i) => { const s = document.createElement('i'); s.className = 'stone'; s.style.cssText = 'left:' + POS[i][0] * W + 'px;top:' + POS[i][1] * H + 'px;--c:' + c; box.append(s); return s; });
     // work out where the letters will sit
-    const fs = Math.min(W * 0.2, 120), oc = document.createElement('canvas'); oc.width = W; oc.height = H;
+    const fs = Math.min(W * 0.27, 150), oc = document.createElement('canvas'); oc.width = W; oc.height = H;
     const o = oc.getContext('2d'); o.font = 'italic 400 ' + fs + 'px "Cormorant Garamond", Georgia, serif'; o.textBaseline = 'middle';
     const x0 = (W - o.measureText('SIDDU').width) / 2, xU = x0 + o.measureText('SIDD').width;
     o.fillStyle = '#fff'; o.fillText('SIDDU', x0, cy);
     const d = o.getImageData(0, 0, W, H).data, A = [], B = [];
-    for (let y = 0; y < H; y += 4) for (let x = 0; x < W; x += 4) if (d[(y * W + x) * 4 + 3] > 128) (x < xU ? A : B).push([x, y]);
+    for (let y = 0; y < H; y += 3) for (let x = 0; x < W; x += 3) if (d[(y * W + x) * 4 + 3] > 128) (x < xU ? A : B).push([x, y]);
     const ux = (B.reduce((s, p) => s + p[0], 0) / (B.length || 1)) || cx + 60, uy = cy;
     const burst = (x, y, T) => T.forEach((t, i) => { const a = Math.random() * 6.283, v = 2 + Math.random() * 9; P.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, tx: t[0], ty: t[1], c: COL[i % 4], h: 45 }); });
     const loop = now => {
@@ -102,17 +105,20 @@
       for (const p of P) {
         if (p.h > 0) { p.h--; p.x += p.vx; p.y += p.vy; p.vx *= .96; p.vy *= .96; }
         else { p.x += (p.tx - p.x) * .08 + Math.sin(now / 300 + p.tx) * .15; p.y += (p.ty - p.y) * .08 + Math.cos(now / 300 + p.ty) * .15; }
-        g.fillStyle = p.c; g.globalAlpha = .55 + .45 * Math.sin(now / 250 + p.tx * .05); g.fillRect(p.x, p.y, 2.2, 2.2);
+        g.fillStyle = p.c; g.globalAlpha = .8 + .2 * Math.sin(now / 250 + p.tx * .05); g.fillRect(p.x, p.y, 3, 3);
       }
+      ta += (ga - ta) * .04; tb += (gb - tb) * .04;
+      if (ta > .01 || tb > .01) { g.font = o.font; g.textBaseline = 'middle'; g.shadowColor = '#9fc4ff'; g.shadowBlur = 22; g.fillStyle = '#EEF4FF';
+        if (ta > .01) { g.globalAlpha = ta; g.fillText('SIDD', x0, cy); } if (tb > .01) { g.globalAlpha = tb; g.fillText('U', xU, cy); } g.shadowBlur = 0; }
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
     const el = (cls, x, y) => { const e = document.createElement('i'); e.className = cls; e.style.left = x + 'px'; e.style.top = y + 'px'; box.append(e); return e; };
     const bloom = () => { const b = document.createElement('div'); b.className = 'bloom'; document.body.append(b); setTimeout(() => b.remove(), 2500); };
 
-    await J.say('Captain… four stones. They want to meet in the middle.', 600);
-    J.tip('Tap a glowing stone, or drag it to the centre.');
-    const stop = J.nudge(['Touch a stone and slide it to the glowing centre. Any stone first.', 'Or just tap a stone. I’ll carry it for you.']);
+    await J.say('Four stars, Captain. Let’s bring them together.', 600);
+    J.tip('Tap a star, or drag it to the middle.');
+    const stop = J.nudge(['Touch a star and slide it to the glowing middle. Any one first.', 'Or just tap a star. I’ll carry it over.']);
     setTimeout(() => stones.forEach(s => s.classList.add('hint')), 9000);
     await new Promise(res => stones.forEach(s => {
       let drag = false;
@@ -130,16 +136,16 @@
     }));
     stop(); J.hide();
     await w(1000);
-    bloom(); await w(500); core.classList.add('gone'); burst(cx, cy, A);
+    bloom(); await w(500); core.classList.add('gone'); burst(cx, cy, A); setTimeout(() => ga = .9, 2600);
     await w(3800);
-    await J.say('One piece missing…', 500);
+    await J.say('One more star to go.', 500);
     J.tip('Tap the little flickering star.');
     const last = el('last', ux, uy);
     const stop2 = J.nudge(['See the tiny flickering star beside the name? Tap it.']);
     await new Promise(r => { last.onclick = r; });
-    stop2(); J.hide(); last.remove(); bloom(); burst(ux, uy, B);
+    stop2(); J.hide(); last.remove(); bloom(); burst(ux, uy, B); setTimeout(() => gb = .95, 2400);
     await w(3000);
-    box.insertAdjacentHTML('beforeend', '<p class="cap2" style="top:' + (cy + fs * .9) + 'px">Every universe has one missing piece. In this one, it was always you.</p>');
+    box.insertAdjacentHTML('beforeend', '<p class="cap2" style="top:' + (cy + fs * .9) + 'px">' + REVEAL_LINE + '</p>');
     await w(6500);
     cv.style.opacity = 0; box.querySelector('.cap2').style.opacity = 0; await w(1600); alive = false;
   }
@@ -160,11 +166,11 @@
         await w(80); p.classList.add('on'); await w(l === SIGN ? 2200 : 2800);
       }
       const d = document.createElement('div'); d.className = 'prom';
-      d.innerHTML = '<p class="fl pr">' + PROMISE + '</p><button class="btn" id="seal">I promise</button>';
+      d.innerHTML = '<p class="fl pr">' + PROMISE + '</p><button class="btn" id="seal">' + PROMISE_BTN + '</button>';
       box.append(d); await w(80); d.firstChild.classList.add('on');
       $('#seal').onclick = async () => {
         S.seen = true; star(S.stars && S.stars.length ? yr() : new Date().getFullYear()); save();
-        d.innerHTML = '<p class="fl pr on">Sealed. See you next year ✦</p><p class="fl tg on">' + TAG + '</p>';
+        d.innerHTML = '<p class="fl pr on">' + SEALED_LINE + '</p><p class="fl tg on">' + TAG + '</p>';
         try { await w(4200); room(box, false); } catch (e) {}
       };
     } catch (e) {}

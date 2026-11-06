@@ -50,3 +50,22 @@
 .cap2{position:fixed;left:0;right:0;margin:0 auto;max-width:28rem;padding:0 28px;text-align:center;z-index:3;font:italic 1.4rem/1.5 var(--serif);color:var(--ice);opacity:0;animation:cin 2s .2s forwards;transition:opacity 1.2s}
 @keyframes cin{to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.stone,.last{animation:none}}
+
+/* ---- Lighter, sharper look ---- */
+.bg::before{background:linear-gradient(180deg,rgba(3,7,18,.28),rgba(3,7,18,.1) 45%,rgba(3,7,18,.6))}
+.bg{animation:kb 45s ease-in-out infinite alternate;will-change:transform}
+@keyframes kb{from{transform:scale(1.03)}to{transform:scale(1.13) translate(-1.2%,-.8%)}}
+.screen h1,.screen h2,.screen p{text-shadow:0 2px 16px rgba(3,7,18,.85)}
+.corner,#galaxy .foot{display:none}
+.fin{padding-bottom:calc(env(safe-area-inset-bottom) + 90px)}
+@media (prefers-reduced-motion:reduce){.bg{animation:none}}
+/* ---- Real-looking stars instead of balls ---- */
+.stone{width:120px;height:120px;margin:-60px;border-radius:0;box-shadow:none;background:radial-gradient(circle,#fff 0,#fff 2.5%,transparent 9%),radial-gradient(circle,var(--c) 0,transparent 42%)}
+.stone::before,.stone::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.stone::before{width:100%;height:1px;background:linear-gradient(90deg,transparent,#fff,transparent)}
+.stone::after{width:1px;height:100%;background:linear-gradient(180deg,transparent,#fff,transparent)}
+/* ---- Captain's code in the log ---- */
+.ccode{width:100%;padding:1rem;border:1px solid rgba(198,223,242,.3);border-radius:14px;background:rgba(7,20,38,.55)}
+.ccode small{font-size:.6rem;font-weight:600;letter-spacing:.2em;color:var(--ice);text-transform:uppercase}
+.ccode b{display:block;margin:.4rem 0;font:600 1.8rem "IBM Plex Mono",monospace;letter-spacing:.2em;color:var(--ice)}
+.ccode p{font-size:.9rem}

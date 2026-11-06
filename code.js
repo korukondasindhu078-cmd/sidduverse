@@ -35,6 +35,7 @@
     '#cc input{width:100%;padding:14px;margin:14px 0 10px;background:rgba(255,255,255,.06);border:1px solid rgba(198,223,242,.5);border-radius:12px;color:var(--text);font:600 18px "IBM Plex Mono",monospace;text-align:center;letter-spacing:.2em;text-transform:uppercase}' +
     '#cc .btn{display:block;margin:8px auto}#cc .err{color:#f0a0a0;min-height:20px;font-size:14px}</style>');
 
+  window.SVcode = { encode, decode };
   const op = document.querySelector('#opening');
   const b = Object.assign(document.createElement('button'), { id: 'cc-open', textContent: 'Captain’s code' });
   op.append(b);
