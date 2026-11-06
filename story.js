@@ -26,6 +26,7 @@
   }); };
   // Hints that get clearer every 6 seconds of hesitation; returns a stop function
   const nudge = lines => { const ts = lines.map((l, i) => setTimeout(() => tip(l), 6000 * (i + 1))); return () => ts.forEach(clearTimeout); };
+  window.JUNO = { say, tip, hide, nudge };
 
   // ---- Entrance: hyperspace jump into the title ----
   function intro() {

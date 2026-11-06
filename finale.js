@@ -76,23 +76,82 @@
     $('#rp').onclick = () => play(box);
   }
 
+  // The stones, the burst of light and the name
+  async function reveal(box, w, id) {
+    const J = window.JUNO || { say: async () => {}, tip() {}, hide() {}, nudge: () => () => {} };
+    await document.fonts.ready;
+    const W = innerWidth, H = innerHeight, cx = W / 2, cy = H * 0.42;
+    box.innerHTML = '<canvas class="fx"></canvas><div class="core" style="left:' + cx + 'px;top:' + cy + 'px"></div>';
+    const cv = box.firstChild, g = cv.getContext('2d'), core = box.lastChild;
+    cv.width = W; cv.height = H;
+    const COL = ['#7fa6d6', '#d58bd0', '#4fd1c5', '#d9a84e'], POS = [[.2, .2], [.8, .27], [.22, .55], [.78, .6]];
+    let P = [], alive = true, got = 0;
+    const stones = COL.map((c, i) => { const s = document.createElement('i'); s.className = 'stone'; s.style.cssText = 'left:' + POS[i][0] * W + 'px;top:' + POS[i][1] * H + 'px;--c:' + c; box.append(s); return s; });
+    // work out where the letters will sit
+    const fs = Math.min(W * 0.2, 120), oc = document.createElement('canvas'); oc.width = W; oc.height = H;
+    const o = oc.getContext('2d'); o.font = 'italic 400 ' + fs + 'px "Cormorant Garamond", Georgia, serif'; o.textBaseline = 'middle';
+    const x0 = (W - o.measureText('SIDDU').width) / 2, xU = x0 + o.measureText('SIDD').width;
+    o.fillStyle = '#fff'; o.fillText('SIDDU', x0, cy);
+    const d = o.getImageData(0, 0, W, H).data, A = [], B = [];
+    for (let y = 0; y < H; y += 4) for (let x = 0; x < W; x += 4) if (d[(y * W + x) * 4 + 3] > 128) (x < xU ? A : B).push([x, y]);
+    const ux = (B.reduce((s, p) => s + p[0], 0) / (B.length || 1)) || cx + 60, uy = cy;
+    const burst = (x, y, T) => T.forEach((t, i) => { const a = Math.random() * 6.283, v = 2 + Math.random() * 9; P.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, tx: t[0], ty: t[1], c: COL[i % 4], h: 45 }); });
+    const loop = now => {
+      if (!alive || id !== run) return;
+      g.clearRect(0, 0, W, H); g.globalCompositeOperation = 'lighter';
+      for (const p of P) {
+        if (p.h > 0) { p.h--; p.x += p.vx; p.y += p.vy; p.vx *= .96; p.vy *= .96; }
+        else { p.x += (p.tx - p.x) * .08 + Math.sin(now / 300 + p.tx) * .15; p.y += (p.ty - p.y) * .08 + Math.cos(now / 300 + p.ty) * .15; }
+        g.fillStyle = p.c; g.globalAlpha = .55 + .45 * Math.sin(now / 250 + p.tx * .05); g.fillRect(p.x, p.y, 2.2, 2.2);
+      }
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+    const el = (cls, x, y) => { const e = document.createElement('i'); e.className = cls; e.style.left = x + 'px'; e.style.top = y + 'px'; box.append(e); return e; };
+    const bloom = () => { const b = document.createElement('div'); b.className = 'bloom'; document.body.append(b); setTimeout(() => b.remove(), 2500); };
+
+    await J.say('Captain… four stones. They want to meet in the middle.', 600);
+    J.tip('Tap a glowing stone, or drag it to the centre.');
+    const stop = J.nudge(['Touch a stone and slide it to the glowing centre. Any stone first.', 'Or just tap a stone. I’ll carry it for you.']);
+    setTimeout(() => stones.forEach(s => s.classList.add('hint')), 9000);
+    await new Promise(res => stones.forEach(s => {
+      let drag = false;
+      s.onpointerdown = e => { drag = true; s.setPointerCapture(e.pointerId); s.classList.add('drag'); };
+      s.onpointermove = e => { if (drag) { s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px'; } };
+      s.onpointerup = () => {
+        if (!drag) return; drag = false; s.classList.remove('drag', 'hint'); s.classList.add('in');
+        s.style.left = cx + 'px'; s.style.top = cy + 'px';
+        setTimeout(() => {
+          s.remove(); core.style.setProperty('--n', ++got); el('ring', cx, cy);
+          document.body.classList.add('shake'); setTimeout(() => document.body.classList.remove('shake'), 400);
+          if (got === 4) res();
+        }, 900);
+      };
+    }));
+    stop(); J.hide();
+    await w(1000);
+    bloom(); await w(500); core.classList.add('gone'); burst(cx, cy, A);
+    await w(3800);
+    await J.say('One piece missing…', 500);
+    J.tip('Tap the little flickering star.');
+    const last = el('last', ux, uy);
+    const stop2 = J.nudge(['See the tiny flickering star beside the name? Tap it.']);
+    await new Promise(r => { last.onclick = r; });
+    stop2(); J.hide(); last.remove(); bloom(); burst(ux, uy, B);
+    await w(3000);
+    box.insertAdjacentHTML('beforeend', '<p class="cap2" style="top:' + (cy + fs * .9) + 'px">Every universe has one missing piece. In this one, it was always you.</p>');
+    await w(6500);
+    cv.style.opacity = 0; box.querySelector('.cap2').style.opacity = 0; await w(1600); alive = false;
+  }
+
   // The ending
   const F = $('#final'); let run = 0;
   async function play(box) {
     const id = ++run, w = async ms => { await wait(ms); if (id !== run) throw 0; };
     try {
       F.classList.remove('quiet');
-      box.innerHTML = '<p class="kick">Four fragments collected</p><div class="name"><span>S</span><span>I</span><span>D</span><span>D</span><span class="u">U</span></div><p class="cap"></p><div class="act"></div>';
-      const sp = box.querySelectorAll('.name span'), cap = box.querySelector('.cap'), act = box.querySelector('.act');
-      for (let i = 0; i < 4; i++) { await w(700); sp[i].classList.add('on'); }
-      await w(1000);
-      cap.textContent = 'Something’s missing. Press and hold to light the last star.';
-      act.innerHTML = '<button class="hold" aria-label="Press and hold to light the last star"><i></i></button>';
-      await hold(act.firstChild);
+      await reveal(box, w, id);
       if (id !== run) return;
-      flash(); act.innerHTML = ''; sp[4].classList.add('on');
-      cap.textContent = 'Every universe has one missing piece. In this one, it was always you.';
-      await w(6000);
       F.classList.add('quiet');
       box.innerHTML = '<div class="msg2"></div>';
       const m = box.firstChild;
