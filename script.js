@@ -107,4 +107,7 @@
     if (cur !== 'opening' || document.hidden) return;
     sh.classList.remove('go'); void sh.offsetWidth; sh.classList.add('go');
   }, 9000);
+
+  // Hooks for the story layer
+  window.SV = { go, show, complete: id => { done[id] = true; save(); } };
 })();
